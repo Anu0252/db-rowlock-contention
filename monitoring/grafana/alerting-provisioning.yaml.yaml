@@ -1,0 +1,39 @@
+# File: monitoring/grafana/alerting-provisioning.yaml
+apiVersion: 1
+groups:
+  - orgId: 1
+    name: "Database SRE Alerts"
+    folder: "Infrastructure"
+    interval: 10s
+    rules:
+      - uid: db_thundering_herd
+        title: "PostgreSQL Thundering Herd (Lock Cascade)"
+        condition: C
+        data:
+          # Query Prometheus for waiting locks
+          - refId: A
+            datasourceUid: prometheus
+            relativeTimeRange: { from: 300, to: 0 }
+            model:
+              expr: pg_stat_activity_count{state="active", wait_event_type="Lock"}
+          # Reduce to the last value
+          - refId: B
+            datasourceUid: __expr__
+            model:
+              type: reduce
+              reducer: last
+              conditions: [{ evaluator: { params: [10], type: gt }, operator: { type: and }, query: { params: [A] } }]
+          # Trigger if condition exceeds threshold (10 waiters)
+          - refId: C
+            datasourceUid: __expr__
+            model:
+              type: math
+              expression: $B > 10
+        for: 15s
+        noDataState: OK
+        execErrState: Error
+        labels:
+          severity: critical
+          team: sre-data
+        annotations:
+          summary: "Lock cascade detected! Connection pool exhaustion imminent."

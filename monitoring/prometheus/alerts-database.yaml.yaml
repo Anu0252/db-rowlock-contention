@@ -1,0 +1,27 @@
+# File: monitoring/prometheus/alerts-database.yaml
+groups:
+  - name: postgres-sre-alerts
+    rules:
+      # Alert 1: Connection Pool Exhaustion Warning
+      - alert: PostgresConnectionPoolExhaustion
+        expr: pg_stat_activity_count{state="active"} / pg_settings_max_connections > 0.85
+        for: 1m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Database connection pool at {{ $value | humanizePercentage }}"
+          description: "The active connections have exceeded 85% of max_connections. E-commerce web nodes may start throwing HTTP 500s."
+
+      # Alert 2: The "Thundering Herd" Lock Contention
+      - alert: PostgresHighLockContention
+        # Fires if more than 10 queries are stuck waiting on a lock
+        expr: pg_stat_activity_count{state="active", wait_event_type="Lock"} > 10
+        for: 15s
+        labels:
+          severity: critical
+          component: database
+          auto_remediate: "true"   # This tag tells the webhook to trigger Ansible
+        annotations:
+          summary: "Severe Row-Level Lock Contention (Thundering Herd) detected."
+          description: "Over 10 transactions are queued waiting for an ExclusiveLock. Automated remediation is required to prevent cascade failure."

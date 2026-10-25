@@ -1,0 +1,42 @@
+# File: k8s-templates/base/service.yaml
+
+---
+# 1. Headless Service for PostgreSQL (Required for StatefulSet stable DNS)
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: db-lab
+  labels:
+    app: postgres
+    component: database
+spec:
+  clusterIP: None # Headless service for direct pod resolution
+  ports:
+    - port: 5432
+      name: postgres
+      targetPort: 5432
+  selector:
+    app: postgres
+
+---
+# 2. Metrics Service for Prometheus to scrape the Exporters
+apiVersion: v1
+kind: Service
+metadata:
+  name: exporter-service
+  namespace: db-lab
+  labels:
+    app: db-exporters
+    component: observability
+spec:
+  type: ClusterIP
+  ports:
+    - port: 9187
+      name: pg-metrics
+      targetPort: 9187
+    - port: 9104
+      name: mysql-metrics
+      targetPort: 9104
+  selector:
+    app: db-exporters

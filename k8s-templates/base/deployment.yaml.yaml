@@ -1,0 +1,57 @@
+# File: k8s-templates/base/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-exporters
+  namespace: db-lab
+  labels:
+    app: db-exporters
+    component: observability
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-exporters
+  template:
+    metadata:
+      labels:
+        app: db-exporters
+      annotations:
+        # Prometheus auto-discovery annotations
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9187"
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: quay.io/prometheuscommunity/postgres-exporter:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DATA_SOURCE_URI
+              # Formatted as: host:port/dbname?sslmode=disable
+              value: "postgres-0.postgres-service.db-lab.svc.cluster.local:5432/lab_db?sslmode=disable"
+            - name: DATA_SOURCE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: pg-user
+            - name: DATA_SOURCE_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: pg-password
+          ports:
+            - containerPort: 9187
+              name: pg-metrics
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: pg-metrics
+            initialDelaySeconds: 15
+            periodSeconds: 10
