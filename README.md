@@ -20,13 +20,13 @@ The screenshots below show the system behavior while the row lock is held and th
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/2-lock-tables.png" alt="Grafana lock tables showing lock accumulation on the contested row" width="900" />
+  <img src="Screenshots/Lock table.jpg" alt="Grafana lock tables showing lock accumulation on the contested row" width="900" />
   <br>
   <em>Figure 2. Lock tables: row-level lock activity spikes while the queue builds.</em>
 </p>
 
 <p align="center">
-  <img src="docs/screenshots/3-active-sessions.png" alt="Grafana active sessions rising while clients wait on the locked record" width="900" />
+  <img src="Screenshots/Active sessions.jpg" alt="Grafana active sessions rising while clients wait on the locked record" width="900" />
   <br>
   <em>Figure 3. Active sessions: more clients remain blocked on the same row.</em>
 </p>
