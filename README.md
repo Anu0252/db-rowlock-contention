@@ -7,9 +7,9 @@
 
 A hands-on SRE lab demonstrating how high-density traffic on a single database record (like an E-Commerce Flash Sale) cascades into row-level lock contention, connection pool exhaustion, and site-wide outages.
 
-👉 **[View the Interactive Architecture Diagram Here](https://[your-github-username].github.io/your-repo-name/)**
+👉 **[View the Interactive Architecture Diagram Here](https://anu0252.github.io/db-rowlock-contention/)**
 
-*(Note: Enable GitHub Pages in your repo settings pointing to the `main` branch to view the diagram).*
+*(Note: If GitHub Pages is not live yet, enable it in the repository settings for the `main` branch to view the diagram.)*
 
 ---
 
@@ -43,3 +43,5 @@ SELECT * FROM items WHERE id = 1 FOR UPDATE;
 SELECT pg_sleep(20);
 UPDATE items SET payload = 'locked-checkout' WHERE id = 1;
 COMMIT;
+
+```
