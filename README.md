@@ -9,6 +9,16 @@ A hands-on SRE lab demonstrating how high-density traffic on a single database r
 
 👉 **[View the Interactive Architecture Diagram Here](https://anu0252.github.io/db-rowlock-contention/)**
 
+### Grafana snapshots during the lab
+
+The screenshots below show the system behavior while the row lock is held and the workload is forced into a queue.
+
+| Screenshot | What to notice |
+| --- | --- |
+| 1. Transactions | Watch the transaction rate collapse as the blocked row lock stops commits from completing. The throughput drops sharply while waiting queries pile up behind the single contested record. |
+| 2. Lock tables | The lock table spikes on the row-level lock metrics, showing the database is waiting on a single row (`FOR UPDATE`) while the rest of the workload stalls. |
+| 3. Active sessions | Session count rises as more clients wait on the same row. This is the clearest sign that the bottleneck is not CPU or memory, but serialization on one record. |
+
 *(Note: If GitHub Pages is not live yet, enable it in the repository settings for the `main` branch to view the diagram.)*
 
 ---
