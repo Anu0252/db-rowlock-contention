@@ -7,7 +7,7 @@
 
 A hands-on SRE lab demonstrating how high-density traffic on a single database record (like an E-Commerce Flash Sale) cascades into row-level lock contention, connection pool exhaustion, and site-wide outages.
 
-👉 **[View the Interactive Architecture Diagram Here](https://anu0252.github.io/db-rowlock-contention/)**
+**[View the Interactive Architecture Diagram Here](https://anu0252.github.io/db-rowlock-contention/)**
 
 ### Grafana snapshots during the lab
 
@@ -23,7 +23,7 @@ The screenshots below show the system behavior while the row lock is held and th
 
 ---
 
-## 📖 The Problem Statement
+## The Problem Statement
 
 During an e-commerce flash sale (e.g., a limited sneaker drop), thousands of users attempt to purchase the exact same item at the same millisecond. 
 
@@ -33,7 +33,7 @@ Within seconds, the database **connection pool is completely exhausted**. Users 
 
 ---
 
-## 🔬 Lab Simulation Overview
+## Lab Simulation Overview
 
 This lab simulates this exact scenario inside a Kubernetes cluster to observe the system degradation through Prometheus and Grafana.
 
