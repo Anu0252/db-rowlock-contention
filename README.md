@@ -14,7 +14,7 @@ A hands-on SRE lab demonstrating how high-density traffic on a single database r
 The screenshots below show the system behavior while the row lock is held and the workload is forced into a queue.
 
 <p align="center">
-  <img src="docs/screenshots/1-transactions.png" alt="Grafana transactions showing blocked commits during row lock contention" width="900" />
+  <img src="Screenshots/transactions.jpg" alt="Grafana transactions showing blocked commits during row lock contention" width="900" />
   <br>
   <em>Figure 1. Transactions: commit volume collapses as the single row lock stalls work.</em>
 </p>
