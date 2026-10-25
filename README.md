@@ -7,11 +7,29 @@
 
 A hands-on SRE lab demonstrating how high-density traffic on a single database record (like an E-Commerce Flash Sale) cascades into row-level lock contention, connection pool exhaustion, and site-wide outages.
 
-**[View the Interactive Architecture Diagram Here](https://anu0252.github.io/db-rowlock-contention/)**
+👉 **[View the Interactive Architecture Diagram Here](https://anu0252.github.io/db-rowlock-contention/)**
 
 ### Grafana snapshots during the lab
 
 The screenshots below show the system behavior while the row lock is held and the workload is forced into a queue.
+
+<p align="center">
+  <img src="docs/screenshots/1-transactions.png" alt="Grafana transactions showing blocked commits during row lock contention" width="900" />
+  <br>
+  <em>Figure 1. Transactions: commit volume collapses as the single row lock stalls work.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/2-lock-tables.png" alt="Grafana lock tables showing lock accumulation on the contested row" width="900" />
+  <br>
+  <em>Figure 2. Lock tables: row-level lock activity spikes while the queue builds.</em>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/3-active-sessions.png" alt="Grafana active sessions rising while clients wait on the locked record" width="900" />
+  <br>
+  <em>Figure 3. Active sessions: more clients remain blocked on the same row.</em>
+</p>
 
 | Screenshot | What to notice |
 | --- | --- |
@@ -23,7 +41,7 @@ The screenshots below show the system behavior while the row lock is held and th
 
 ---
 
-## The Problem Statement
+## 📖 The Problem Statement
 
 During an e-commerce flash sale (e.g., a limited sneaker drop), thousands of users attempt to purchase the exact same item at the same millisecond. 
 
@@ -33,7 +51,7 @@ Within seconds, the database **connection pool is completely exhausted**. Users 
 
 ---
 
-## Lab Simulation Overview
+## 🔬 Lab Simulation Overview
 
 This lab simulates this exact scenario inside a Kubernetes cluster to observe the system degradation through Prometheus and Grafana.
 
